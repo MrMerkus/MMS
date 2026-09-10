@@ -1,0 +1,25 @@
+# Sırlar
+.claude/settings.local.json
+.env
+*.yedek
+*.yedek-*
+*.bak
+
+# Çalışma zamanı durumu
+.claude/hooks/.state/
+.claude/scripts/.state/*
+!.claude/scripts/.state/.gitkeep
+
+# Sistem çöpü
+.DS_Store
+.obsidian/workspace*
+.obsidian/cache
+.obsidian/graph.json
+__pycache__/
+*.pyc
+
+# Hassas klasör: bağlama girmediği gibi uzağa da gitmez.
+# Denetçi bu satırların varlığını doğrular; kaldırılırsa denetim hata verir.
+🔐 kasa/*
+!🔐 kasa/.gitkeep
+!🔐 kasa/OKU.md
