@@ -122,6 +122,12 @@ Asıl ilke tek cümleye iner: **bir sistemin iyi olması yanlış şeyi yapmayı
 değil, pahalı kılmasıyla ölçülür.** Kural koymak ucuzdur; kuralı ölçen bir şey yazmak
 pahalıdır ama kalıcı olan odur.
 
+## Araç uyumluluğu
+
+Bugün **Claude Code**'da tam çalışır ve kurulum onunla test edildi. **Codex** ve **Antigravity**
+için hafıza köprüleri var ama kısmi; **Gemini CLI** ve **Cursor** desteği planlandı. Ayrıntılı
+tablo ve yol haritası: [ARAC-UYUMLULUK.md](https://github.com/MrMerkus/My-AI-System/blob/main/ARAC-UYUMLULUK.md)
+
 ## Köken ve katkılar
 
 Temel: [`avenoxai/avenoxbeyin`](https://github.com/avenoxai/avenoxbeyin) — Obsidian + Claude
