@@ -5,7 +5,7 @@ description: Çalışma ofisinde yeni bir proje başlatır. Ofiste kendi alt kla
 
 # Yeni Proje
 
-Bu skill ofisin dağılmasını önler. <KULLANICI>'nın kuralı: **ofiste her iş kendi alt klasöründe durur,
+Bu skill ofisin dağılmasını önler. kullanıcının kuralı: **ofiste her iş kendi alt klasöründe durur,
 klasörün adı projenin ne olduğunu söyler.** Ofis kökünde başıboş dosya birikmez.
 
 Skill sadece klasör açmaz; projenin **iki tarafını birden** kurar. Kod ofiste, projenin beyni
@@ -16,8 +16,8 @@ altı ay sonra "bu kod neden böyle" sorusunu cevapsız bırakır.
 
 | Ne | Yol |
 | --- | --- |
-| Ofis (kod) | `~/ofis` → `~/Documents/Benim yapay zeka sistemim/ofis` |
-| Vault (beyin) | `~/Documents/Benim yapay zeka sistemim/NemesesOS` |
+| Ofis (kod) | `~/ofis` → `<OFIS>` |
+| Vault (beyin) | `<HAFIZA>` |
 | Proje notları | `🏰 İş/<slug>/` |
 
 `~/ofis` kısayolunu kullan. Uzun yolda boşluk ve Türkçe karakter var, bazı araç zincirleri
@@ -33,7 +33,7 @@ Bu adımı atlama. Dağınıklığı önleyen asıl adım budur.
 ls -A ~/ofis/
 ```
 
-Benzer isimli veya aynı işi yapan bir klasör varsa **yeni klasör açma**. <KULLANICI>'ya sor: mevcut
+Benzer isimli veya aynı işi yapan bir klasör varsa **yeni klasör açma**. kullanıcıya sor: mevcut
 projenin devamı mı, yoksa gerçekten ayrı bir iş mi? Devamıysa oraya gir, yenisini açma.
 
 ### 2. Slug belirle
@@ -64,11 +64,11 @@ Bu dosya köprüyü kurar:
 cat > ~/ofis/<slug>/CLAUDE.md <<'EOF'
 # <Proje Adı>
 
-Bu proje NemesesOS'a bağlıdır. Kimlik, ton ve hafıza protokolü için
-`~/Documents/Benim yapay zeka sistemim/NemesesOS/CLAUDE.md` ve `🔮 zihin/Ruh.md` dosyalarını oku.
+Bu proje hafıza sistemine bağlıdır. Kimlik, ton ve hafıza protokolü için
+`<HAFIZA>/CLAUDE.md` ve `🔮 zihin/Ruh.md` dosyalarını oku.
 
 **Bu klasör:** kaynak kod, çalışan iş.
-**Projenin beyni:** `~/Documents/Benim yapay zeka sistemim/NemesesOS/🏰 İş/<slug>/`
+**Projenin beyni:** `<HAFIZA>/🏰 İş/<slug>/`
 kararlar, açık sorular ve öğrenilenler oraya yazılır, buraya değil.
 
 ## Çalışma protokolü
@@ -112,7 +112,7 @@ Symlink bu kaymayı model disiplinine değil dosya sistemine bağlar.
 ### 5. Vault'ta ikiz notu yaz
 
 ```bash
-mkdir -p "$HOME/Documents/Benim yapay zeka sistemim/NemesesOS/🏰 İş/<slug>"
+mkdir -p "<HAFIZA>/🏰 İş/<slug>"
 ```
 
 Ardından `🏰 İş/<slug>/<slug>.md` dosyasını şu iskeletle oluştur (frontmatter alanları
@@ -142,7 +142,7 @@ tags: [proje]
 <cevabı bilinmeyenler>
 
 ## Öğrendiklerim
-<işin kendisine dair kavranan şeyler. <KULLANICI> hem projeyi bitirmek hem işi öğrenmek istiyor,
+<işin kendisine dair kavranan şeyler. kullanıcı hem projeyi bitirmek hem işi öğrenmek istiyor,
 bu bölüm ikinci amacın kaydıdır>
 ```
 
@@ -163,7 +163,7 @@ Bu adım olmadan proje gelecek oturumda görünmez olur.
 
 ### 7. Raporla
 
-<KULLANICI>'ya kısa bir özet ver: açılan klasör, slug, not dosyasının yolu. Sonra doğrudan işe geç,
+kullanıcıya kısa bir özet ver: açılan klasör, slug, not dosyasının yolu. Sonra doğrudan işe geç,
 kutlama cümlesi kurma.
 
 ## Sınırlar

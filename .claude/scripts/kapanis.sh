@@ -2,7 +2,7 @@
 # Kapanış döngüsü: frontmatter'ında "durum: kapandı" olan dosyaları
 # "📦 bitmiş olanlar/<yıl>/" altına taşır. Silmez, taşır.
 #
-# Neden var: NemesesOS'un eski 900-Archive klasörü hiç dolmadı, çünkü elle
+# Neden var: elle doldurulan arşiv klasörleri hiç dolmaz, çünkü elle
 # doldurulması gerekiyordu. Kural vardı, taşıyan mekanizma yoktu.
 #
 # Kuru çalıştırma: .claude/scripts/kapanis.sh --dene

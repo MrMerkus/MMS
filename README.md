@@ -57,16 +57,44 @@ Sistemin ayırt edici yanı budur. Her kuralın onu çalıştıran bir parçası
 
 ## Kurulum
 
-1. Bu depoyu vault'unun olacağı klasöre kopyala (Obsidian vault'u olarak açabilirsin).
-2. `CLAUDE.md` içindeki `<...>` yer tutucularını doldur: sistem adı, asistan adı, kullanıcı,
-   dil, ofis yolu.
-3. `🔮 zihin/Ruh.md` ve `🔮 zihin/Çekirdek.md` şablonlarını doldur. Çekirdek'i asistan
-   sorarak da doldurabilir — tasarım gereği tahminle yazmaz.
-4. `git init` yap ve bir uzak depo bağla (`.claude/scripts/yedek.sh` bunu kullanır).
-5. `.claude/scripts/denetci.sh` çalıştır. Hepsi ✅ olmalı.
+### Claude Code ile (önerilen)
 
-Gereksinimler: `bash`, `python3`, `git`. Windows'ta hook'ların PowerShell karşılıkları kullanılır. Claude Code hook'ları `.claude/settings.json`
-üzerinden bağlanır; dosya hazır gelir.
+Boş bir klasörde Claude Code'u açın ve şu komutu yapıştırın:
+
+```
+https://github.com/MrMerkus/My-AI-System deposundaki KURULUM.md dosyasını oku ve beni kur. Sadece hafıza sistemini istiyorum.
+```
+
+### Elle
+
+1. Depoyu klonlayın:
+   ```bash
+   git clone https://github.com/MrMerkus/MMS.git <klasör>
+   ```
+
+2. `origin` uzak deposunu kaldırın:
+   ```bash
+   git -C <klasör> remote remove origin
+   ```
+   Aksi takdirde otomatik oturum yedekleme mekanizması özel notlarınızı bu açık şablon deposuna göndermeye çalışır; kendi ÖZEL (private) uzak deponuzu ekleyin.
+
+3. `~/.config/my-ai-system/sistem.json` ayar dosyasını oluşturun (asgari örnek):
+   ```json
+   {
+     "asistan_adi": "Atlas",
+     "kullanici": "Kullanıcı"
+   }
+   ```
+
+4. Şablon yer tutucularını uygulayın:
+   ```bash
+   python3 kurulum/yapilandir.py
+   ```
+
+5. Kurulumu denetleyin:
+   ```bash
+   .claude/scripts/denetci.sh
+   ```
 
 ## Klasörler
 

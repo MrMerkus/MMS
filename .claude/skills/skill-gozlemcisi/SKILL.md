@@ -1,17 +1,17 @@
 ---
 name: skill-gozlemcisi
-description: Çalışırken fark edilen tekrar eden örüntüleri ve sürtünme anlarını gözlem olarak kaydeder, biriken gözlemleri toplu incelemede yeni skill veya kural önerisine çevirir. "gözlemlere bak", "skill gözlemleri", "ne tekrar ediyor", "bundan skill çıkar mı", "toplu inceleme" dendiğinde kullan. Ayrıca bir oturumun sonunda o oturumdan kayda değer bir şey çıktıysa ve beş oturumdur inceleme yapılmadıysa kullan.
+description: Çalışırken fark edilen tekrar eden örüntüleri ve sürtünme anlarını gözlem olarak kaydeder, biriken gözlemleri toplu incelemede yeni skill veya kural önerisine çevirir. "gözlemlere bak", "skill gözlemleri", "ne tekrar ediyor", "bundan skill çıkar mı", "toplu inceleme" dendiğinde kullan. Ayrıca bir oturumun sonunda o oturumdan kayda değer bir şey çıktıysa kullan; toplu inceleme yalnızca defterde 30-40 açık gözlem biriktiğinde önerilir.
 ---
 
 # Skill Gözlemcisi
 
 Skill'ler masa başında "hadi bir skill yazalım" diyerek değil, **gerçek iş sırasında fark
-edilen sürtünmeden** doğar. `yeni-proje` skill'i böyle çıktı: ofis dağılmaya başladı, <KULLANICI>
+edilen sürtünmeden** doğar. `yeni-proje` skill'i böyle çıktı: ofis dağılmaya başladı, kullanıcı
 kuralı söyledi, kural skill'e dönüştü. Ama o sefer fark eden tesadüftü. Bu skill o farkedişi
 sistemli hâle getirir.
 
 Kaynak: [rebelytics/one-skill-to-rule-them-all](https://github.com/rebelytics/one-skill-to-rule-them-all)
-(CC BY 4.0, Eoghan Henn). Bu, o meta-skill'in NemesesOS'a uyarlanmış hâlidir. Uyarlamada
+(CC BY 4.0, Eoghan Henn). Bu, o meta-skill'in bu sisteme uyarlanmış hâlidir. Uyarlamada
 Cowork'e özgü bölümler, skill aileleri ve eski sürüm göçü çıkarıldı; sürekli izleme yerine
 **oturum sonu toplu değerlendirme** kondu. Sebebi maliyet: orijinal her oturumda bağlama
 9.000 token yüklüyor ve modelden her turda "bu kayda değer mi" diye düşünmesini istiyor.
@@ -27,7 +27,7 @@ Cowork'e özgü bölümler, skill aileleri ve eski sürüm göçü çıkarıldı
 
 **Vault'ta değil, ofiste.** Yılda birkaç yüz dosya birikir; `compile.py` insan yazımı notlar
 için tasarlandığından makine üretimi gözlemler onu boğar ve `knowledge/` altını zehirler.
-Ofis Obsidian'da ikinci vault olarak açık olduğu için <KULLANICI> oradan okur.
+Ofis Obsidian'da ikinci vault olarak açık olduğu için kullanıcı oradan okur.
 
 Numaralar asla tekrar kullanılmaz. Yeni numara için `gozlemler/` ve `arsiv/` birlikte taranır,
 en büyük numaranın bir fazlası alınır. Dizin listesi indekstir; ayrı içindekiler tutulmaz.
@@ -36,7 +36,7 @@ en büyük numaranın bir fazlası alınır. Dizin listesi indekstir; ayrı içi
 
 Üç sinyal var. Hepsinde ortak ölçüt şudur: **bir dahaki sefere işi değiştirir mi?**
 
-**Yeni skill fırsatı.** Aynı yapıda bir iş ikinci veya üçüncü kez yapılıyorsa; <KULLANICI> bir yöntemi
+**Yeni skill fırsatı.** Aynı yapıda bir iş ikinci veya üçüncü kez yapılıyorsa; kullanıcı bir yöntemi
 tarif ediyorsa ("ben bunu hep şöyle yaparım"); girdisi, adımları ve çıktısı belli bir süreç
 kendiliğinden ortaya çıkıyorsa.
 
@@ -44,9 +44,9 @@ kendiliğinden ortaya çıkıyorsa.
 ya da fazlaydı. Olumlu sinyal de sayılır: bir adım özellikle işe yaradıysa o da yazılır.
 
 **Sürtünme.** Bir şey beklenenden zor gitti. Üç kez başarısız olan bir komut, yanlış varsayımla
-başlanıp geri dönülen bir yol, <KULLANICI>'nın "böyle değil" dediği bir an.
+başlanıp geri dönülen bir yol, kullanıcının "böyle değil" dediği bir an.
 
-**Kaydedilmeyecekler:** tek seferlik işler, projeye özgü ayrıntılar, <KULLANICI>'nın anlık tercihleri
+**Kaydedilmeyecekler:** tek seferlik işler, projeye özgü ayrıntılar, kullanıcının anlık tercihleri
 (onlar kalıcı hafızaya gider), ve zaten bilinen şeyin tekrarı. Şüphedeysen yazma — gürültülü
 defter okunmaz.
 
@@ -91,10 +91,16 @@ ortasında olduğunu bilmelidir.
 **Oturum sonunda.** O oturumda kayda değer bir şey olduysa gözlem yazılır. Olmadıysa hiçbir
 şey yazılmaz; boş kayıt gürültüdür.
 
-**Toplu inceleme iki yolla tetiklenir.** <KULLANICI> "gözlemlere bak" dediğinde çalışır. Ayrıca son
-incelemeden beri beş oturum geçtiyse hatırlatılır — ama **kendiliğinden inceleme yapılmaz**,
-yalnızca "on iki gözlem birikti, bakalım mı?" denir. Kontrol <KULLANICI>'da kalır, unutma da
-engellenir.
+**Toplu inceleme iki yolla tetiklenir.** kullanıcı "gözlemlere bak" dediğinde çalışır. Ayrıca
+**defterde 30-40 açık gözlem biriktiğinde** hatırlatılır — ama **kendiliğinden inceleme
+yapılmaz**, yalnızca "otuz gözlem birikti, bakalım mı?" denir. Kontrol kullanıcıda kalır,
+unutma da engellenir.
+
+Eşik 2026-09-12'de kullanıcının kararıyla oturum sayısından gözlem sayısına çevrildi:
+**"30-40 tane olunca adam akıllı skiller oluştururuz."** Gerekçe, az sayıda gözlemden
+skill üretmenin tek seferlik olayı örüntü sanmaya yol açması; örüntü ancak yeterince
+kayıt birikince güvenilir biçimde görünür. Oturum sayacı `son-inceleme` dosyasında
+kalabilir ama tetikleyici değildir, yalnızca bilgi.
 
 Sayaç `son-inceleme` dosyasında tutulur.
 
@@ -107,10 +113,10 @@ Sayaç `son-inceleme` dosyasında tutulur.
    aranır: hiç işe yaramayan bölümler, tek gözlemden doğmuş kurallar, sürekli uyulmayan
    kurallar (bunlar ya yapısal zorlayıcılığa çevrilir ya kaldırılır). Sinyal listesi
    `references/sinyaller.md` dosyasında.
-3. Her örüntü için <KULLANICI>'ya **sor**: bu yeni bir skill mi, mevcut bir skill'in düzeltmesi mi,
+3. Her örüntü için kullanıcıya **sor**: bu yeni bir skill mi, mevcut bir skill'in düzeltmesi mi,
    `🔮 zihin/Kurallar.md` dosyasına bir kural mı, yoksa hiçbiri mi?
 4. **Otomatik yazma yok.** Ne `Kurallar.md`, ne kalıcı hafıza, ne yeni bir skill dosyası
-   <KULLANICI> onaylamadan oluşturulmaz. Onun söylemediği bir şeyin kural hâline gelmesi bu sistemin
+   kullanıcı onaylamadan oluşturulmaz. Onun söylemediği bir şeyin kural hâline gelmesi bu sistemin
    en riskli senaryosudur.
 5. Karara bağlanan gözlemin `durum` ve `cozum` alanları doldurulur, dosya `arsiv/` altına
    taşınır. Kalanlar `acik` kalır.
@@ -118,8 +124,8 @@ Sayaç `son-inceleme` dosyasında tutulur.
 
 ## Sınırlar
 
-- Gözlem **öneridir, karar değildir**. Uygulama her zaman <KULLANICI>'nın onayıyla olur.
-- Bu skill <KULLANICI>'nın düzeltmelerini kaydetmez; onlar kalıcı hafızaya ve `Kurallar.md`'ye gider.
-  Buradaki konu **neyi tekrar yaptığımız**, orada ise **<KULLANICI>'nın ne dediği**. İkisi karışırsa
+- Gözlem **öneridir, karar değildir**. Uygulama her zaman kullanıcının onayıyla olur.
+- Bu skill kullanıcının düzeltmelerini kaydetmez; onlar kalıcı hafızaya ve `Kurallar.md`'ye gider.
+  Buradaki konu **neyi tekrar yaptığımız**, orada ise **kullanıcının ne dediği**. İkisi karışırsa
   aynı bilgi iki yerde yaşar ve bir gün çelişirler.
 - Gözlem dosyaları vault'a taşınmaz.

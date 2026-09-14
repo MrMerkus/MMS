@@ -37,7 +37,7 @@ if [ -f "$BEYIN_MEMORY_DIR/Kurallar.md" ]; then
   BEYIN_RULES=$(sed -n '/^---$/,/^---$/!p' "$BEYIN_MEMORY_DIR/Kurallar.md" 2>/dev/null | sed -n '1,60p')
 fi
 
-# Kimlik: Ruh (kişilik, üç mod) + Çekirdek (<KULLANICI> hakkında kalıcı veri).
+# Kimlik: Ruh (kişilik, üç mod) + Çekirdek (kullanıcı hakkında kalıcı veri).
 # İkisi de küçük tutulur; büyürlerse refleks katmanı şişer.
 BEYIN_JOURNAL=""
 for BEYIN_KIMLIK_DOSYA in "$BEYIN_MEMORY_DIR/Ruh.md" "$BEYIN_MEMORY_DIR/Çekirdek.md"; do

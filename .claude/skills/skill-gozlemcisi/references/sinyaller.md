@@ -6,20 +6,20 @@ kaydedilmeye değer olup olmadığından emin olmadığında, bir oturumdan çok
 gerektiğine karar verirken yükle.
 
 Kaynak: `one-skill-to-rule-them-all/references/signals.md` (CC BY 4.0, Eoghan Henn),
-NemesesOS'a uyarlanmış hâli.
+bu sisteme uyarlanmış hâli.
 
 ## Yeni skill sinyalleri
 
-Tekrar eden çok adımlı bir iş akışı; <KULLANICI>'nın anlattığı ve hiçbir skill'in karşılamadığı
+Tekrar eden çok adımlı bir iş akışı; kullanıcının anlattığı ve hiçbir skill'in karşılamadığı
 bir yöntem; benzer yapıda tekrarlayan bir görev tipi; girdisi, aşamaları ve çıktısı belli
-bir süreç; <KULLANICI>'nın "ben bunu hep şöyle yaparım" demesi; iş sırasında kendiliğinden ortaya
+bir süreç; kullanıcının "ben bunu hep şöyle yaparım" demesi; iş sırasında kendiliğinden ortaya
 çıkan yapılandırılmış bir yaklaşım.
 
 ## Mevcut skill'i iyileştirme sinyalleri
 
 - Skill'de yazılı bir kurala uyulmadı — **kural yetersiz değil, zorlayıcılığı yetersizdir**;
   daha yüksek sesle yazmak çözmez, yapısal bir adıma çevirmek çözer.
-- <KULLANICI>'nın bir düzeltmesi eksik bir kuralı veya sınır durumu açığa çıkardı.
+- kullanıcının bir düzeltmesi eksik bir kuralı veya sınır durumu açığa çıkardı.
 - Skill'in önerdiğinden daha iyi bir yol ortaya çıktı.
 - Tesadüfen kullanılan bir teknik, önerilen hâle getirilecek kadar iyi çalıştı.
 - Belgelenmemiş bir kullanım durumu.
@@ -55,7 +55,7 @@ Cevapların çoğu hayırsa bu bir gözlem değil, göreve özgü bağlamdır. T
 geçici çözüm, tek bir duruma özgü bir tercih, geçici bir kısıttan doğan bir karar — iş
 sürerken skill iyileştirmesi gibi görünürler, değildirler.
 
-Kaydedecekse **soyutlama düzeyini yükselt**: "<KULLANICI> modülleri tek depoda tutmayı tercih etti"
+Kaydedecekse **soyutlama düzeyini yükselt**: "kullanıcı modülleri tek depoda tutmayı tercih etti"
 değil, "skill, ortak modüllerin ne zaman merkezileştirileceğine dair yönlendirme içermiyor".
 
 **Ne zaman öğrenmemek gerektiğini bilmek, sinyali fark etmek kadar önemlidir.** Tek tük
@@ -64,7 +64,7 @@ değil, "skill, ortak modüllerin ne zaman merkezileştirileceğine dair yönlen
 ## Kaydedilmeyecekler
 
 Genelleşmeyen tek seferlik düzeltmeler; bir skill'de zaten yazılı olan tercihler; yöntemle
-ilgisi olmayan araç hataları; ve <KULLANICI>'nın anlık tercihleri — bunlar kalıcı hafızaya gider,
+ilgisi olmayan araç hataları; ve kullanıcının anlık tercihleri — bunlar kalıcı hafızaya gider,
 gözlem defterine değil.
 
 ## Gözlem kipi ne zaman açık

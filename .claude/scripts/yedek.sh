@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Yedek — vault'u uzak depoya gönderir.
 #
-# ÇALIŞMA BİÇİMİ: <KULLANICI>'nın onayıyla SessionEnd'e bağlandı; her oturum sonunda
+# ÇALIŞMA BİÇİMİ: kullanıcının onayıyla SessionEnd'e bağlandı; her oturum sonunda
 # arka planda çalışır (günlük yazıcısını beklemek için 25 sn gecikmeli). Ayrıca
 # elle de çağrılabilir. Hassas klasör .gitignore'da olduğu için uzağa gitmez.
 #

@@ -2,7 +2,7 @@
 # Boş kalan klasörler için soru üretir. session-start.sh tarafından çağrılır.
 #
 # Neden var: 💪 Beden ve 🧘 Düşünceler iki aydır boştu, çünkü onları dolduran
-# bir şey yoktu. <KULLANICI>'nın isteği: "arada bana soru sorarak bunları doldursun."
+# bir şey yoktu. kullanıcının isteği: "arada bana soru sorarak bunları doldursun."
 # Kural değil mekanizma — sistemin geri kalanıyla aynı mantık.
 #
 # Ne yapmaz: her oturumda sormaz. Klasör tazeyse susar, sorulduysa bir süre bekler.
@@ -26,6 +26,6 @@ sor() {
   printf '%s\n' "$soru"
 }
 
-sor "💪 Beden" "beden" "💪 Beden/ $bekleme gündür boş. Uygun bir anda <KULLANICI>'ya sor: uyku düzeni, spor ve genel sağlık nasıl gidiyor? Cevabı 💪 Beden/ altına yaz; kendin doldurma."
-sor "🧘 Düşünceler" "dusunceler" "🧘 Düşünceler/ $bekleme gündür boş. Uygun bir anda <KULLANICI>'ya sor: kafanı meşgul eden, henüz bir yere yazmadığı bir şey var mı? Cevabı 🧘 Düşünceler/ altına yaz; kendin doldurma."
+sor "💪 Beden" "beden" "💪 Beden/ $bekleme gündür boş. Uygun bir anda kullanıcıya sor: uyku düzeni, spor ve genel sağlık nasıl gidiyor? Cevabı 💪 Beden/ altına yaz; kendin doldurma."
+sor "🧘 Düşünceler" "dusunceler" "🧘 Düşünceler/ $bekleme gündür boş. Uygun bir anda kullanıcıya sor: kafanı meşgul eden, henüz bir yere yazmadığı bir şey var mı? Cevabı 🧘 Düşünceler/ altına yaz; kendin doldurma."
 exit 0
