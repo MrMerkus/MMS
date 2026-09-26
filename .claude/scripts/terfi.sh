@@ -30,7 +30,8 @@ echo
 
 echo "SICAK (en çok dokunulan — yüzeyde durmalı)"
 awk -F'\t' -v e="$esik" '$1>=e {say[$3]++} END {for (d in say) printf "%6d  %s\n", say[d], d}' "$kayit" \
-  | sort -rn | head -10 | sed 's/^/  /'
+  | sort -rn | while read -r n d; do [ -e "$kok/$d" ] && printf '%6d  %s\n' "$n" "$d"; done \
+  | head -10 | sed 's/^/  /'  # taşınmış ya da silinmiş dosya sıcak listede görünmez
 [ -s "$kayit" ] || echo "  (veri yok)"
 
 echo

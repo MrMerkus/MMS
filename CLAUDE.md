@@ -40,8 +40,8 @@ Kullanıcı: <KULLANICI>. Bağlam: <BİR İKİ CÜMLE — kim, ne yapıyor, bu b
 
 ## Hafıza protokolü
 
-Makine `daily/` klasörünü kendi yazıyor: her oturum sonunda özet düşer, akşamları `knowledge/`
-altına derler. Senin işin ilişkisel katman: anlamlı bir oturum bitmeden
+Makine `daily/` klasörünü kendi yazıyor: her oturum sonunda özet düşer; kavramları `knowledge/`
+altına `derle` skill'i çıkarır. Senin işin ilişkisel katman: anlamlı bir oturum bitmeden
 `🔮 zihin/son-oturum/YYYY-AA-GG-<sıra>.md` olarak yeni bir dosya yaz (tek büyük dosya
 tutulmuyor), `🔮 zihin/kalan-isler/` altındaki ilgili konu dosyasını düzelt ve
 `kalan-isler/INDEKS.md` satırını güncelle. Önemli bir şey olduysa
@@ -79,15 +79,20 @@ kararını yazan taraf verir.
 | `indeks-uret.py <klasör>` | İndeks taslağı üretir, elle yazılan açıklamaları korur | Klasöre dosya eklendiğinde |
 | `terfi.sh [gün]` | Sıcak/soğuk dosyaları ve refleks katmanının boyutunu raporlar | Arada; katman yerleşimi gözden geçirilirken |
 | `kapanis.sh [--dene]` | `durum: kapandı` olanı arşive taşır | Otomatik (oturum sonu) |
+| `emeklilik.py [--dene] [--geri <ad>]` | 30 gün dokunulmamış 🟡/🟢 kalan-işi soğuk indekse indirir, geri getirir | Otomatik (kapanış içinde); `--geri` elle |
 | `denetci.sh` | Yapı, kapsam, yedek ve kasa dokunulmazlığı denetimi | Yapısal değişiklik öncesi ve sonrası |
-| `testler.sh [-v]` | 40 testle mekanizmaların çalıştığını kanıtlar | Hook veya script değiştirildiğinde |
+| `testler.sh [-v]` | Test takımıyla mekanizmaların çalıştığını kanıtlar | Hook veya script değiştirildiğinde |
 | `yedek.sh [mesaj]` | Commit + uzak gönderim | Otomatik (oturum sonu) |
 | `log-dondur.py [--dene]` | Geçmiş yılın derleme günlüğünü arşive döndürür | Otomatik (kapanış içinde) |
 | `gecmis-ayir.py <dosya>` | `<details>` arşiv bloğunu alt dosyaya taşır | Dosya tavanı aştığında |
 | `graf_kontrol.py` | Kırık bağlantı ve yetim not taraması | Toplu dosya taşımadan sonra |
+| `bayat-tara.py <kök>...` | Yerini almış ifadenin işaretsiz geçtiği satırı bulur (`bayat-kaliplar.tsv`) | Denetçi çağırır; karar değişince kalıp eklenir |
+| `ders-tetikleri.tsv` | Tekrarlanan ders → tetikleyici satırı; `hooks/ders-kapisi.py` uygular, her satır testtir | Bir ders yazıldıktan sonra tekrarlanırsa satır eklenir |
 
 Makine katmanı (elle çalıştırılmaz, hook'lar tetikler): `flush.py` oturumu `daily/` logu
-yapar, `compile.py` logları `knowledge/` altına derler, `_portalock.py` kilit yardımcısıdır,
+yapar, `olaylar.py` olay defterini tutar, `projektor.py` defteri `daily/` ve `knowledge/log.md`'ye
+yansıtır (kavram çıkarımı ana döngüde `derle` skill'iyle; `compile.py` emekli), `jev.py` gölge
+modda çalışır, `_portalock.py` kilit yardımcısıdır,
 `render_*.py` ve `antigravity_hooks.py` başka araçlar için hook üretir.
 
 **Bir hook veya script değiştirildiğinde `testler.sh` çalıştırılır.** Testsiz bir mekanizma,

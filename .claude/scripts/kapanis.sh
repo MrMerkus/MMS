@@ -51,6 +51,17 @@ done < <(find "${tara[@]}" -name '*.md' ! -name 'INDEKS.md' ! -name 'OKU.md' -pr
 
 echo "toplam: $tasinan"
 
+# Emeklilik (organ 4): 30 gündür dokunulmamış 🟡/🟢 kalan-iş enjeksiyondan düşer,
+# dosyası yerinde kalır, soğuk indekste iz bırakır. Kuru çalıştırmada dokunmaz.
+if [ "$dene" != "--dene" ] && [ -f "$kok/.claude/scripts/emeklilik.py" ]; then
+  python3 "$kok/.claude/scripts/emeklilik.py" "$kok/🔮 zihin/kalan-isler" >/dev/null 2>&1 || :
+  # Günlük arşivlerin indeksi elle tutulmuyordu (defterde 9 gün satırsız kalmıştı,
+  # test günü C). Satırı yine yazan yazar; bu yalnız unutulanı tamamlar.
+  for arsiv in "$kok/📓 Günlük/defter" "$kok/🔮 zihin/son-oturum"; do
+    [ -d "$arsiv" ] && python3 "$kok/.claude/scripts/indeks-uret.py" "$arsiv" >/dev/null 2>&1 || :
+  done
+fi
+
 # Takvimle çalışan kardeş iş: geçmiş yılların derleme günlüğünü arşive döndür.
 # Aynı fikir — biten şey açıkların arasında durmaz — sadece tetikleyicisi tarih.
 if [ -x "$kok/.claude/scripts/log-dondur.py" ]; then

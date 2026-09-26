@@ -40,8 +40,8 @@ else ok "üst klasör Obsidian vault'u değil"; fi
 
 echo
 echo "3) Derleyici kapsamı"
-if grep -q 'ofis\|çalışma ofisi' "$kok/.claude/scripts/compile.py" 2>/dev/null; then
-  uy "compile.py ofis yolu içeriyor — kapsamı gözden geçir"
+if grep -q 'ofis\|çalışma ofisi' "$kok/.claude/scripts/projektor.py" 2>/dev/null; then
+  uy "projektor.py ofis yolu içeriyor — kapsamı gözden geçir"
 else
   ok "derleyici ofise bakmıyor"
 fi
@@ -78,9 +78,9 @@ tavan_kontrol() {
   ad=$1; dosya=$2; tavan=$3; kirp=${4:-}
   [ -f "$dosya" ] || return 0
   if [ "$kirp" = "60satir" ]; then
-    boy=$(sed -n '/^---$/,/^---$/!p' "$dosya" | sed -n '1,60p' | wc -c | tr -d ' ')
+    boy=$(sed -n '/^---$/,/^---$/!p' "$dosya" | sed -n '1,60p' | LC_ALL=C.UTF-8 wc -m | tr -d ' ')
   else
-    boy=$(sed -n '/^---$/,/^---$/!p' "$dosya" | wc -c | tr -d ' ')
+    boy=$(sed -n '/^---$/,/^---$/!p' "$dosya" | LC_ALL=C.UTF-8 wc -m | tr -d ' ')  # karakter: SOZLESME ve saglik.sh ile aynı ölçü
   fi
   yuzde=$((boy * 100 / tavan))
   if [ "$yuzde" -ge 100 ]; then
@@ -91,17 +91,56 @@ tavan_kontrol() {
     ok "$ad: $boy/$tavan karakter (%$yuzde)"
   fi
 }
-tavan_kontrol "Kurallar" "$kok/🔮 zihin/Kurallar.md" 4600 60satir
+tavan_kontrol "Kurallar" "$kok/🔮 zihin/Kurallar.md" 4000 60satir
+# Alt kural dosyaları enjekte edilmez, tetiklenince açılır: aşım kırpılma değil,
+# bölme sinyalidir (SOZLESME.md, Karar 3). Bu yüzden hata değil uyarı.
+for kural_alt in "$kok/🔮 zihin/kurallar/"*.md; do
+  [ -f "$kural_alt" ] || continue
+  case "$kural_alt" in */INDEKS.md) continue ;; esac
+  alt_boy=$(wc -m < "$kural_alt" 2>/dev/null | tr -d ' ')
+  case "$alt_boy" in ''|*[!0-9]*) continue ;; esac
+  if [ "$alt_boy" -gt 4000 ]; then
+    uy "kurallar/$(basename "$kural_alt"): $alt_boy/4000 — bölme sinyali (enjekte edilmiyor)"
+  else
+    ok "kurallar/$(basename "$kural_alt"): $alt_boy/4000"
+  fi
+done
 tavan_kontrol "kalan işler indeksi" "$kok/🔮 zihin/kalan-isler/INDEKS.md" 4600
 if [ -n "$(ls -1 "$kok/🔮 zihin/son-oturum"/20*.md 2>/dev/null)" ]; then
   tavan_kontrol "son oturum" "$(ls -1 "$kok/🔮 zihin/son-oturum"/20*.md | tail -n 1)" 3800
 fi
 toplam=$(echo '{"session_id":"denetci"}' | bash "$kok/.claude/hooks/session-start.sh" 2>/dev/null \
   | python3 -c 'import sys,json;print(len(json.load(sys.stdin)["hookSpecificOutput"]["additionalContext"]))' 2>/dev/null || echo 0)
-if [ "$toplam" -ge 15200 ]; then
-  uy "toplam bağlam $toplam/16000 — sınıra yaklaşıyor"
+. "$kok/.claude/hooks/esikler.sh"
+if [ "$toplam" -ge "$BAGLAM_TAVAN" ]; then
+  no "toplam bağlam $toplam/$(binlik "$BAGLAM_TAVAN") — kırmızı: tavan aşıldı, kırpılıyor"
+elif [ "$toplam" -gt "$BAGLAM_TURUNCU" ]; then
+  uy "toplam bağlam $toplam — turuncu bölge ($(binlik "$BAGLAM_TURUNCU") üstü, tavan $(binlik "$BAGLAM_TAVAN"))"
+elif [ "$toplam" -gt "$BAGLAM_HEDEF" ]; then
+  uy "toplam bağlam $toplam — hedef $(binlik "$BAGLAM_HEDEF")'in üstünde (turuncu $(binlik "$BAGLAM_TURUNCU"))"
 else
-  ok "toplam bağlam $toplam/16000"
+  ok "toplam bağlam $toplam/$(binlik "$BAGLAM_HEDEF") hedef"
+fi
+
+# "Ne zaman aç" yazılmamış (❔) ya da rengi değişmiş (↻) kalan-iş satırı: indeks
+# durum metnini açıklama sanmasın diye yedek kaldırıldı; boşluk burada görünür.
+isaretli=$(cat "$kok/🔮 zihin/kalan-isler"/INDEKS*.md 2>/dev/null | grep -cE '^\| \[\[.*\| (❔|↻)')
+if [ "$isaretli" -gt 0 ]; then
+  uy "kalan-iş indeksinde $isaretli satır ❔/↻ — \"ne zaman aç\" elle yazılmalı"
+else
+  ok "kalan-iş indeksinde her satırın \"ne zaman aç\" açıklaması var"
+fi
+
+echo
+echo "6d) Bayat kayıt (yerini aldı işareti)"
+motor="${BEYIN_MOTOR:-$HOME/.config/beyin/motor}"
+bayat=$(python3 "$kok/.claude/scripts/bayat-tara.py" "$kok" "$motor/DURUM.md" "$motor/PLAN.md" \
+  "$motor/SOZLESME.md" "$motor/IYILESTIRME.md" "$HOME/.claude/skills" 2>/dev/null)
+if [ -n "$bayat" ]; then
+  uy "işaretsiz bayat kayıt: $(printf '%s\n' "$bayat" | wc -l) (eski kayda 'yerini aldı: <yeni>' yaz)"
+  printf '%s\n' "$bayat" | sed "s#$HOME#~#; s/^/     /"
+else
+  ok "işaretsiz bayat kayıt yok"
 fi
 
 echo

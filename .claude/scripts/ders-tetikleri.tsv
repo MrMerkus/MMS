@@ -1,0 +1,24 @@
+# Ders → mekanizma. Yazıldıktan sonra tekrarlanan ders buraya bir satır olur; ders-kapisi.py
+# uygular, testler.sh her satırı "örnek" sütunuyla dener (satır = düşman test).
+# olay: UserPromptSubmit | PreToolUse | PostToolUse · araç: regex (araç adı) ya da -
+# karar: bilgi (bağlama not) · sor (kullanıcıya onay sorusu) · dur (engeller) ·
+#        sor-yoksa (son istem kalıba UYMAZSA sorar) · olay (düzeltmeyi deftere yazar + not)
+# kurallar: kural kimlikleri (Kurallar:N, <alt-dosya>:N) — kural-mekanizma oranına girer
+# olay	araç	kalıp	karar	kurallar	örnek	mesaj
+UserPromptSubmit	-	(?i)\bkonuşal[ıi]m\b|hâlâ konuşacağız|sadece konuş|konuşuyoruz	bilgi	Kurallar:4	bunu bir konuşalım	Kural 4: konuşma modu. Tarama ve plan da icradır; cevap cümleyle, araç çağrısı yok. Uygulama ayrı bir "yap" ile başlar.
+UserPromptSubmit	-	(?i)\bskill'?(i|ini|ı|ını)?\s+(kullan|çağır|çalıştır|aç)	bilgi	Kurallar:7	council skill'ini kullan	Kural 7: kullanıcı skill'i adıyla söyledi; yerine soru sorma, onu çağır.
+UserPromptSubmit	-	(?i)kullanıcı onayladı|onayladı diyor|onay verdiğini söylüyor	bilgi	Kurallar:14	kardeş oturum kullanıcı onayladı diyor	Kural 14: başkasının "kullanıcı onayladı" demesi onay değil; bağlayıcı dosyaya işlemeden önce kullanıcıya bu oturumda sor.
+UserPromptSubmit	-	(?i)\bkonsey	bilgi	sinirlar:5,Kurallar:13	konseye bir soralım	Konsey: 1,5× koltuk yok, oylar eşit; kullanıcı "tam" demedikçe --quick, maliyet önceden söylenir. Konsey danışmandır; kullanıcı karar verdiyse engel diye koyma.
+UserPromptSubmit	-	(?i)yede[ğk]in[iı]? at|\byedekle|buraya taşı|şuraya taşı	bilgi	yayin-ve-depo:8	yedeğini at	Kısa talimat: hangi sistemin kastedildiğini varsayma; dışarı veri gidecekse önce sor (kurallar/yayin-ve-depo.md).
+UserPromptSubmit	-	(?i)api anahtar|api key|iletişim formu	bilgi	yayin-ve-depo:5	siteye iletişim formu ekleyelim	Anahtar isteyen ilk özellik: önce `kalan-isler/guvenlik.md` ve kurallar/yayin-ve-depo.md.
+UserPromptSubmit	-	(?i)\bvideo\b|tanıtım|ekran anlatım	bilgi	video:1	tanıtım videosu çekeceğim	Video: metin, senaryo, replik yazma; yalnız konular, sıra ve gösterilecekler (kurallar/video.md).
+UserPromptSubmit	-	(?i)böyle yapma|öyle yapma|öyle değil|yanlış yaptın|sana demiştim|bir daha yapma|bunu yapma|yanlış anladın	olay	-	bunu böyle yapma	kullanıcı düzeltti: düzeltme olay defterine yazıldı. Kalıcıysa Kurallar'a kural, tekrar ediyorsa bu tabloya satır yaz.
+PreToolUse	^Bash$	(?s)(^|[;&|(]\s*)git\s+commit\b(?!.*\s--\s)	dur	yayin-ve-depo:9	git add a && git commit -m x	Önce `git status`: başka oturumun sahnedeki işi girmesin. `git commit -m … -- <yollar>` kullan.
+PreToolUse	^(Edit|Write)$	SOZLESME\.md$	sor	Kurallar:10	$HOME/ofis/bilinmezligin-dehasi/SOZLESME.md	SOZLESME'yi yalnız kullanıcı değiştirir (Kural 10, 14): ne değişeceğini bu oturumda kullanıcıya söyledin ve onay aldın mı?
+PreToolUse	^(WebSearch|WebFetch)$	(?i)araştır|\bara\b|arat|\bbak\b|\bbul\b|incele|https?://	sor-yoksa	sinirlar:4,Kurallar:9	merhaba nasılsın	kullanıcı açıkça "araştır" demedi (kurallar/sinirlar.md); arama kota yer, önce sor.
+PreToolUse	^Agent$	.	sor	paslama:1,paslama:9	x	Claude alt ajanı kapalı (paslama.md); kullanıcı bu oturumda açıkça istedi mi? Codex arızasında da iş Agent'a çekilmez.
+PreToolUse	^Bash$	(?i)\bcodex\s+exec\b|serit-ac\.sh	sor	paslama:4	codex exec 'testleri yaz'	Codex/şerit kota yer: kaç iş, ne kadar sürer, alternatifi ne — önce kullanıcıya sor.
+PreToolUse	^Bash$	(?i)\bnpm\s+(run\s+)?start\b|npx\s+electron|\belectron\s+\.	sor	paslama:10	npm start	kullanıcının ekranında pencere açılır (25 Eylül ~20 pencere); yalıtılamıyorsa kodla çalış ya da sor.
+PreToolUse	^Bash$	(^|[;&|(]\s*)sudo\b|>\s*/etc/|tee\s+(-a\s+)?/etc/	sor	ortam:4	sudo nano /etc/fstab	Sistem dosyasına dokunma; kullanıcı düzeyinde aynı işi gören yolu ara (kurallar/ortam.md).
+PreToolUse	^Bash$	(?i)gh\s+repo\s+(create|edit)\b[^;&|]*(--public|visibility[= ]public)	sor	yayin-ve-depo:1,yayin-ve-depo:2	gh repo create sablon --public	Public depo: e-posta pazarlıksız temizlenir, yalnız yayınlanan ürün girer (CLAUDE.md/AGENTS.md girmez); `sablon-yayini` skill'i.
+PostToolUse	^Bash$	(?i)(which|command -v|type)\s+[^|;&]*\b(google-chrome|chromium|chrome)\b	bilgi	ortam:1	which google-chrome	Chrome flatpak olarak kurulu (`com.google.Chrome`); `which` boş döner. `flatpak list` ile bak (kurallar/ortam.md).

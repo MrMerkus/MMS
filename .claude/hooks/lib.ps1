@@ -35,8 +35,8 @@
 
 Set-StrictMode -Version Latest
 
-# lib.sh:2 -- the recursion guard. The summarizer's own `claude -p` call opens a
-# session; without this every hook would fire again inside it, forever.
+# lib.sh:2 -- the recursion guard. Any child session a script opens (an agent
+# lane, a headless model call) would otherwise fire every hook again inside it, forever.
 if (-not [string]::IsNullOrEmpty($env:BEYIN_INVOKED_BY)) { exit 0 }
 
 # No bash equivalent, and not optional. On Windows [Console]::OutputEncoding

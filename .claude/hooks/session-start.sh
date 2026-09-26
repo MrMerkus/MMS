@@ -4,6 +4,7 @@
 
 BEYIN_HOOK_DIR=$(CDPATH= cd "$(dirname "$0")" 2>/dev/null && pwd)
 . "$BEYIN_HOOK_DIR/lib.sh" 2>/dev/null || exit 0
+. "$BEYIN_HOOK_DIR/esikler.sh" 2>/dev/null || exit 0
 
 BEYIN_MEMORY_DIR="$BEYIN_PROJECT_DIR/🔮 zihin"
 mkdir -p "$BEYIN_STATE_DIR" 2>/dev/null || :
@@ -91,8 +92,7 @@ do
   rm -f "$BEYIN_REFLECTION_FILE" 2>/dev/null || :
 done
 
-# Hard section entry caps, including truncation notes: Last Session 4000,
-# Threads 2000, Kurallar 4000, Journal 1500, reflection debt 1000 characters.
+# Bölüm tavanları (kırpma notu dahil) aşağıdaki çağrılarda; denetçi 4.600 / 3.800 ile izler.
 # Boş kalan klasörler için soru sırası (💪 Beden, 🧘 Düşünceler).
 # Klasör tazeyse veya yakında sorulduysa hiçbir şey üretmez.
 # Yedek push'u başarısız olduysa bunu yüzüne söyle: sessiz kalan bir yedek
@@ -103,6 +103,22 @@ if [ -f "$BEYIN_STATE_DIR/yedek-basarisiz" ]; then
     [ -n "$BEYIN_REFLECTION" ] && BEYIN_REFLECTION="${BEYIN_REFLECTION}${BEYIN_NL}"
     BEYIN_REFLECTION="${BEYIN_REFLECTION}⚠️ ${BEYIN_YEDEK_HATA} — .claude/scripts/yedek.sh çalıştır."
   fi
+fi
+
+# Sağlık satırı çekirdeğe girer: ölçen her mekanizma sorulmadan konuşur.
+BEYIN_SAGLIK=$(bash "$BEYIN_HOOK_DIR/saglik.sh" "$BEYIN_PROJECT_DIR" 2>/dev/null || :)
+if [ -n "$BEYIN_SAGLIK" ]; then
+  [ -n "$BEYIN_REFLECTION" ] && BEYIN_REFLECTION="${BEYIN_REFLECTION}${BEYIN_NL}"
+  BEYIN_REFLECTION="${BEYIN_REFLECTION}${BEYIN_SAGLIK}"
+fi
+
+# Farkındalık (organ 1b): ofiste ne değişti, açık şerit, bayat bilgi. Susabilir.
+BEYIN_FARKINDALIK=$(bash "$BEYIN_HOOK_DIR/farkindalik.sh" "$BEYIN_PROJECT_DIR" 2>/dev/null || :)
+if [ -n "$BEYIN_FARKINDALIK" ]; then
+  [ "${#BEYIN_FARKINDALIK}" -gt 800 ] && BEYIN_FARKINDALIK="${BEYIN_FARKINDALIK:0:780}
+[not: kırpıldı]"
+  [ -n "$BEYIN_REFLECTION" ] && BEYIN_REFLECTION="${BEYIN_REFLECTION}${BEYIN_NL}"
+  BEYIN_REFLECTION="${BEYIN_REFLECTION}[Farkındalık]${BEYIN_NL}${BEYIN_FARKINDALIK}"
 fi
 
 BEYIN_SORULAR=$(bash "$BEYIN_HOOK_DIR/soru-sirasi.sh" "$BEYIN_PROJECT_DIR" 2>/dev/null || :)
@@ -129,18 +145,14 @@ BEYIN_LAST_SESSION=$(beyin_cap_section "$BEYIN_LAST_SESSION" 3800 \
   '[not: son oturum 3.800 karakterde kırpıldı, beyin-doktor çalıştır]')
 BEYIN_THREADS=$(beyin_cap_section "$BEYIN_THREADS" 4600 \
   '[not: kalan işler indeksi 4.600 karakterde kırpıldı, beyin-doktor çalıştır]')
-BEYIN_RULES=$(beyin_cap_section "$BEYIN_RULES" 4600 \
-  '[not: kurallar 4.600 karakterde kırpıldı, beyin-doktor çalıştır]')
-BEYIN_JOURNAL=$(beyin_cap_section "$BEYIN_JOURNAL" 3000 \
-  '[not: kimlik 3.000 karakterde kırpıldı, beyin-doktor çalıştır]')
-BEYIN_REFLECTION=$(beyin_cap_section "$BEYIN_REFLECTION" 1000 \
-  '[not: hafıza uyarıları 1.000 karakterde kırpıldı, beyin-doktor çalıştır]')
+# ÇEKİRDEK — kurallar, kimlik ve sağlık satırı kırpılmaz (SOZLESME.md, Karar 2).
+# Bunlar büyürse çözüm kırpmak değil, bölmektir; tavanı saglik.sh söyler.
 
 BEYIN_TRUNCATED=0
 BEYIN_CLOSING='[Hafıza] Süreklilik senin sorumluluğun. Kimliğin yukarıda yüklü. Kalan işlerden biri gerekirse "🔮 zihin/kalan-isler/<dosya>" aç.
 Hafıza protokolü zorunludur.'
 BEYIN_TRUNCATION_NOTE='[not: indeks kırpıldı, beyin-doktor çalıştır]'
-BEYIN_CAP_DIAGNOSTIC='Beyin uyarısı: Oturum başlangıç bağlamı 16.000 karakter sınırına sığmadı. Bölüm limitlerini kontrol etmek için beyin-doktor çalıştır.'
+BEYIN_CAP_DIAGNOSTIC="Beyin uyarısı: Oturum başlangıç bağlamı $(binlik "$BAGLAM_TAVAN") karakter sınırına sığmadı. Bölüm limitlerini kontrol etmek için beyin-doktor çalıştır."
 
 beyin_build_context() {
   BEYIN_CONTEXT=""
@@ -156,11 +168,11 @@ beyin_build_context() {
 }
 
 beyin_build_context
-if [ "${#BEYIN_CONTEXT}" -gt 16000 ]; then
+if [ "${#BEYIN_CONTEXT}" -gt "$BAGLAM_TAVAN" ]; then
   BEYIN_TRUNCATED=1
   beyin_build_context
 
-  BEYIN_OVER=$(( ${#BEYIN_CONTEXT} - 16000 ))
+  BEYIN_OVER=$(( ${#BEYIN_CONTEXT} - BAGLAM_TAVAN ))
   if [ "$BEYIN_OVER" -gt 0 ] && [ -n "$BEYIN_INDEX" ]; then
     if [ "$BEYIN_OVER" -ge "${#BEYIN_INDEX}" ]; then
       BEYIN_INDEX=""
@@ -171,7 +183,7 @@ if [ "${#BEYIN_CONTEXT}" -gt 16000 ]; then
     beyin_build_context
   fi
 
-  BEYIN_OVER=$(( ${#BEYIN_CONTEXT} - 16000 ))
+  BEYIN_OVER=$(( ${#BEYIN_CONTEXT} - BAGLAM_TAVAN ))
   if [ "$BEYIN_OVER" -gt 0 ] && [ -n "$BEYIN_DAILY" ]; then
     if [ "$BEYIN_OVER" -ge "${#BEYIN_DAILY}" ]; then
       BEYIN_DAILY=""
@@ -181,44 +193,51 @@ if [ "${#BEYIN_CONTEXT}" -gt 16000 ]; then
     beyin_build_context
   fi
 
-  # Journal and reflection are the only remaining non-protected sections.
-  BEYIN_OVER=$(( ${#BEYIN_CONTEXT} - 16000 ))
-  if [ "$BEYIN_OVER" -gt 0 ] && [ -n "$BEYIN_JOURNAL" ]; then
-    if [ "$BEYIN_OVER" -ge "${#BEYIN_JOURNAL}" ]; then
-      BEYIN_JOURNAL=""
+  # Durum katmanı kısılır; çekirdeğe (kurallar, kimlik, sağlık) dokunulmaz.
+  BEYIN_OVER=$(( ${#BEYIN_CONTEXT} - BAGLAM_TAVAN ))
+  if [ "$BEYIN_OVER" -gt 0 ] && [ -n "$BEYIN_THREADS" ]; then
+    if [ "$BEYIN_OVER" -ge "${#BEYIN_THREADS}" ]; then
+      BEYIN_THREADS=""
     else
-      BEYIN_KEEP=$(( ${#BEYIN_JOURNAL} - BEYIN_OVER ))
-      BEYIN_JOURNAL=${BEYIN_JOURNAL:0:$BEYIN_KEEP}
+      BEYIN_KEEP=$(( ${#BEYIN_THREADS} - BEYIN_OVER ))
+      BEYIN_THREADS=${BEYIN_THREADS:0:$BEYIN_KEEP}
     fi
     beyin_build_context
   fi
 
-  BEYIN_OVER=$(( ${#BEYIN_CONTEXT} - 16000 ))
-  if [ "$BEYIN_OVER" -gt 0 ] && [ -n "$BEYIN_REFLECTION" ]; then
-    if [ "$BEYIN_OVER" -ge "${#BEYIN_REFLECTION}" ]; then
-      BEYIN_REFLECTION=""
+  BEYIN_OVER=$(( ${#BEYIN_CONTEXT} - BAGLAM_TAVAN ))
+  if [ "$BEYIN_OVER" -gt 0 ] && [ -n "$BEYIN_LAST_SESSION" ]; then
+    if [ "$BEYIN_OVER" -ge "${#BEYIN_LAST_SESSION}" ]; then
+      BEYIN_LAST_SESSION=""
     else
-      BEYIN_KEEP=$(( ${#BEYIN_REFLECTION} - BEYIN_OVER ))
-      BEYIN_REFLECTION=${BEYIN_REFLECTION:0:$BEYIN_KEEP}
+      BEYIN_KEEP=$(( ${#BEYIN_LAST_SESSION} - BEYIN_OVER ))
+      BEYIN_LAST_SESSION=${BEYIN_LAST_SESSION:0:$BEYIN_KEEP}
     fi
     beyin_build_context
   fi
 fi
 
-if [ "${#BEYIN_CONTEXT}" -gt 16000 ]; then
+# Hedef niyettir, tavan sınırdır; aradaki turuncu bölge belirgin uyarır. Aşım kırpmaz, haber verir.
+if [ "${#BEYIN_CONTEXT}" -gt "$BAGLAM_TURUNCU" ]; then
+  BEYIN_REFLECTION="🟠 Bağlam ${#BEYIN_CONTEXT}/$(binlik "$BAGLAM_TAVAN") karakter — turuncu bölge ($(binlik "$BAGLAM_TURUNCU") üstü). Açılışı küçült: beyin-doktor.${BEYIN_NL}${BEYIN_REFLECTION}"
+  beyin_build_context
+elif [ "${#BEYIN_CONTEXT}" -gt "$BAGLAM_HEDEF" ]; then
+  BEYIN_REFLECTION="⚠️ Bağlam ${#BEYIN_CONTEXT}/$(binlik "$BAGLAM_HEDEF") karakter — hedefin üstünde, turuncu $(binlik "$BAGLAM_TURUNCU"), tavan $(binlik "$BAGLAM_TAVAN").${BEYIN_NL}${BEYIN_REFLECTION}"
+  beyin_build_context
+fi
+
+if [ "${#BEYIN_CONTEXT}" -gt "$BAGLAM_TAVAN" ]; then
   BEYIN_CONTEXT=$BEYIN_CAP_DIAGNOSTIC
 fi
 
 [ -n "$BEYIN_CONTEXT" ] && beyin_emit SessionStart "$BEYIN_CONTEXT"
 
-# The evening compile is triggered from SessionEnd, which means a day whose last
-# session closes before 18:00 never reaches it and its log sits uncompiled. Fire
-# the catch-up pass here, detached and after the context is already emitted so it
-# can neither delay the session nor corrupt the hook's JSON on stdout. flush.py
-# decides whether anything is actually due; the call is cheap when it is not.
+# Projektör yakalama turu: defterde olup yansımamış gün varsa daily/ ve
+# knowledge/log.md'ye yansıtır. Deterministik, model yok; değişmeyen gün için ucuz.
+# Bağlam yazıldıktan sonra ve ayrık çalışır: açılışı geciktiremez, JSON'u bozamaz.
 if command -v python3 >/dev/null 2>&1; then
-  nohup python3 "$BEYIN_PROJECT_DIR/.claude/scripts/flush.py" \
-    --maybe-compile >/dev/null 2>&1 &
+  nohup python3 "$BEYIN_PROJECT_DIR/.claude/scripts/projektor.py" \
+    --hepsi >/dev/null 2>&1 &
 fi
 
 exit 0

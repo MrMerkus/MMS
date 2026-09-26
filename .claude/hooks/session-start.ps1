@@ -258,15 +258,15 @@ if (-not [string]::IsNullOrEmpty($context)) {
     Write-BeyinEmit -Event 'SessionStart' -Text $context
 }
 
-# session-start.sh catch-up parity: after context is emitted, ask flush.py to
-# compile only completed days. The child is detached so it cannot delay or
-# contaminate the hook JSON written above.
+# session-start.sh parity: after context is emitted, run the projector catch-up
+# pass (deterministic, no model). Detached so it cannot delay or contaminate the
+# hook JSON written above.
 try {
     $python = Get-BeyinPython
-    $flush = Join-Path $script:BeyinProjectDir '.claude\scripts\flush.py'
-    if ($python -and (Test-Path -LiteralPath $flush -PathType Leaf)) {
+    $projektor = Join-Path $script:BeyinProjectDir '.claude\scripts\projektor.py'
+    if ($python -and (Test-Path -LiteralPath $projektor -PathType Leaf)) {
         Start-BeyinPythonDetached -Python $python `
-            -Arguments @($flush, '--maybe-compile') `
+            -Arguments @($projektor, '--hepsi') `
             -WorkingDirectory $script:BeyinProjectDir
     }
 }

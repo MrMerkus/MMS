@@ -104,6 +104,23 @@ kalabilir ama tetikleyici değildir, yalnızca bilgi.
 
 Sayaç `son-inceleme` dosyasında tutulur.
 
+## Defter işe başlarken de okunur
+
+Defter yalnızca toplu incelemede okunursa geçmişi kaydeder ama geleceği değiştirmez.
+2026-09-11'de 0009 numaralı gözlem ("Chrome flatpak'te, MCP'ler bulamıyor") defterde dururken
+aynı duvara ertesi gün yeniden toslandı ve kullanıcıya "Chrome kurulu değil" diye yanlış bilgi
+verildi (0013). İki kural:
+
+1. **Tekrar eden gözlem beklemez.** Bir gözlemin anlattığı sürtünme ikinci kez yaşanırsa
+   30-40 eşiği beklenmez: bilgi o an ilgili skill dosyasına yerel gerçek olarak yazılır,
+   gözlem `uygulandi` olarak arşive gider. Eşik yeni skill üretmek içindir, bilinen bir
+   tuzağı ikinci kez yaşamamak için değil.
+2. **Skill'e girerken etiket taraması.** Araç yoğun bir skill'le (tarayıcı, `agy`, Codex,
+   site, masaüstü) işe başlarken tek komutla o skill'i etiketleyen açık gözlemlerin
+   **yalnızca başlıkları** okunur:
+   `grep -l "skill:.*<skill-adı>" ~/ofis/skill-gozlemleri/gozlemler/*.md | xargs grep -h "^baslik:"`
+   İlgili başlık varsa o dosya açılır, yoksa devam edilir. Maliyeti bir çağrı.
+
 ## Toplu inceleme
 
 1. `gozlemler/` içindeki açık kayıtları oku.

@@ -1,0 +1,6 @@
+# Ders kapısı dışındaki mekanizmalar. Kural kimliği → onu zorlayan kod ve kanıtı (test).
+# Kapı satırları ders-tetikleri.tsv'de; ikisi birlikte kural-mekanizma oranını verir.
+# kural	tür	mekanizma	kanıt
+Kurallar:15	tam	bayat-tara.py + denetçi 6d	testler.sh "bayat-tara işaretsiz kaydı yakalar"
+paslama:2	tam	~/ofis/ajans/serit-ac.sh + kapi0.py (şeritsiz Codex işi açılmaz)	~/ofis/ajans/testler/kapi0.sh
+paslama:3	tam	olaylar.py pano + makbuz (makbuzsuz iş açık sayılır)	~/ofis/ajans/testler/kapi0.sh

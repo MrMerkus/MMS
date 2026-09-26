@@ -46,7 +46,7 @@ UserPromptSubmit, SessionEnd, PreCompact), sonra Claude Code'u yeniden başlat.
 for f in .claude/hooks/*.sh; do if grep -q 'BEYIN_INVOKED_BY' "$f"; then echo "$(basename "$f"): guard var"; else echo "$(basename "$f"): GUARD YOK"; fi; done
 ```
 
-🟢 hepsinde var. 🔴 eksik. Guard'ı olmayan hook, arka plan `claude -p` çağrısında tekrar
+🟢 hepsinde var. 🔴 eksik. Guard'ı olmayan hook, script'in açtığı alt oturumda (şerit, başsız model çağrısı) tekrar
 tetiklenir ve sonsuz döngü riski doğar.
 Düzeltme: dosyanın shebang'inden hemen sonraki satıra `[ -n "${BEYIN_INVOKED_BY:-}" ] && exit 0` ekle.
 
@@ -101,13 +101,14 @@ numaralı kontrollere dön, arıza flush zincirinde.
 ### 7. Derleme durumu
 
 ```bash
-f=".claude/scripts/.state/compile-state.json"; if [ -f "$f" ]; then m=$(stat -f %m "$f" 2>/dev/null || stat -c %Y "$f"); n=$(date +%s); echo "state: $(( (n - m) / 3600 )) saat once guncellendi"; python3 -c "import json;d=json.load(open('.claude/scripts/.state/compile-state.json'));print('last_run:',d.get('last_run','yok'));print('last_status:',d.get('last_status','yok'));print('ingested:',len(d.get('ingested',{})),'log')" 2>/dev/null || echo "state dosyasi bozuk, JSON okunamadi"; else echo "compile: state dosyasi yok, henuz hic derleme calismadi"; fi
+grep -h '"tip":"derleme"' daily/olaylar/*.jsonl 2>/dev/null | tail -n 3; python3 .claude/scripts/projektor.py --hepsi --dene
 ```
 
-🟢 `last_run` 48 saatten yeni ve `last_status` `ok`. 🟡 state yok ama vault yeni kurulmuş veya
-henüz akşam 18:00 olmamış. 🔴 `last_status` `fail:` ile başlıyor veya 48 saatten eski.
-Düzeltme: elle bir tur çalıştır ve hatayı gör: `python3 .claude/scripts/compile.py --dry-run`,
-sonra `python3 .claude/scripts/compile.py`.
+Derleme artık `projektor.py`'dir: defterden deterministik yansıma, model çağrısı yok
+(compile.py 24 Eylül'de emekli oldu, kullanıcının D kararı). Kavram makaleleri ana döngüdeki
+`derle` skill'inde. 🟢 son derleme olayı `ok` ve kuru çalıştırmada `yansitilacak` yok.
+🟡 `yansitilacak` var: açılış yakalama turu henüz koşmadı. 🔴 `fail:` olayı ya da
+projektör hata veriyor. Düzeltme: `python3 .claude/scripts/projektor.py --hepsi` ve çıktıyı oku.
 
 ### 8. Sağlık kayıtlarındaki son hatalar
 
@@ -116,8 +117,8 @@ if [ -f .claude/scripts/.state/health.json ]; then tail -c 2000 .claude/scripts/
 ```
 
 🟢 kayıt yok veya son kayıt 7 günden eski. 🔴 son 48 saatte hata kaydı var.
-Düzeltme: `component` alanına bak. `flush` ise transkript veya claude CLI, `compile` ise model
-çağrısı sorunlu. Hatayı okuduktan sonra dosyayı silebilirsin, script yeniden yazar.
+Düzeltme: `component` alanına bak. `flush` ise transkript okuması, `olaylar` ise defter
+(kırık kuyruk, yazılamayan olay) ya da projektör sorunlu. Hatayı okuduktan sonra dosyayı silebilirsin, script yeniden yazar.
 
 ### 9. Bilgi indeksi büyüklüğü
 

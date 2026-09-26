@@ -1,0 +1,3 @@
+# Yerini almış ifadeler. Karar değişince eski ifade buraya eklenir; bayat-tara.py
+# işaretsiz geçtiği satırı bulur. İşaret: "yerini aldı", ~~üstü çizili~~, "emekli",
+# "bırakıldı", "geçersiz", "DEPRECATED". Sütunlar: kalıp (Python regex) <TAB> güncel <TAB> tarih

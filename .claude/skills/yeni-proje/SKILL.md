@@ -16,8 +16,8 @@ altı ay sonra "bu kod neden böyle" sorusunu cevapsız bırakır.
 
 | Ne | Yol |
 | --- | --- |
-| Ofis (kod) | `~/ofis` → `<OFIS>` |
-| Vault (beyin) | `<HAFIZA>` |
+| Ofis (kod) | `~/ofis` (kökün altındaki ofise kısayol) |
+| Vault (beyin) | `~/.config/beyin/vault` |
 | Proje notları | `🏰 İş/<slug>/` |
 
 `~/ofis` kısayolunu kullan. Uzun yolda boşluk ve Türkçe karakter var, bazı araç zincirleri
@@ -65,10 +65,10 @@ cat > ~/ofis/<slug>/CLAUDE.md <<'EOF'
 # <Proje Adı>
 
 Bu proje hafıza sistemine bağlıdır. Kimlik, ton ve hafıza protokolü için
-`<HAFIZA>/CLAUDE.md` ve `🔮 zihin/Ruh.md` dosyalarını oku.
+`~/.config/beyin/vault/CLAUDE.md` ve `🔮 zihin/Ruh.md` dosyalarını oku.
 
 **Bu klasör:** kaynak kod, çalışan iş.
-**Projenin beyni:** `<HAFIZA>/🏰 İş/<slug>/`
+**Projenin beyni:** `~/.config/beyin/vault/🏰 İş/<slug>/`
 kararlar, açık sorular ve öğrenilenler oraya yazılır, buraya değil.
 
 ## Çalışma protokolü
@@ -79,6 +79,11 @@ kararlar, açık sorular ve öğrenilenler oraya yazılır, buraya değil.
   ve sıradaki adım oraya tek satır yazılır. Biten satır silinmez, `backlog-log.md`'ye taşınır.
 - **Arka plan araştırmaları `reports/` altına yazılır.** Alt ajanlara yaptırılan keşif ve
   doküman taraması oraya düşer, doğrudan koda girmez: önce okunur, sonra karar olur.
+- **Değer sorusunda önce `SABITLER.md`.** Port, adres, sürüm gibi değişmeyen veya değişince
+  birden fazla yeri etkileyen değerler orada; değer değişirse aynı commit'te güncellenir.
+- **"Bitti" demeden önce `KRITERLER.md`.** Maddeler tek tek kontrol edilir; ölçülemeyen madde
+  varsa bitti denmez, eksik söylenir. Kriteri ajan gevşetmez, yalnızca kullanıcı değiştirir.
+- **kullanıcının ham fikirleri `kullanıcının notları.md`'de.** Özellik dökümü ve "şimdilik yok" kararları.
 EOF
 ```
 
@@ -100,7 +105,39 @@ adım** ne. Biten satır silinmez, `backlog-log.md`'ye taşınır.
 
 _(şu an açık yarım iş yok)_
 EOF
+cat > SABITLER.md <<'EOF'
+# Sabitler — <slug>
+
+Değişmeyen veya değişince birden fazla yeri etkileyen değerler. Emin olmadığında önce buraya bak.
+
+| Ne | Değer | Nerede tanımlı |
+| --- | --- | --- |
+EOF
+cat > KRITERLER.md <<'EOF'
+# Kriterler — <slug>
+
+Bir aşamanın veya işin ne zaman bitmiş sayılacağı. Her madde ölçülebilir olur. Kriterleri
+kullanıcı koyar veya onaylar; ajan taslak önerir, onaylanmamış taslak "TASLAK" diye işaretlenir.
+
+## <İlk aşama> — TASLAK
+EOF
+cat > "kullanıcının notları.md" <<'EOF'
+# kullanıcının notları — <slug>
+
+Kod öncesi döküm: projede ne olacak, ne **şimdilik olmayacak**. Veri ve mimari baştan
+oturtulsun diye özellikler sonradan yamanmaz, önce buraya dökülür.
+
+## Olacaklar
+
+## Şimdilik yok (bilerek)
+EOF
 ```
+
+**Neden bu üçü:** Avenox Sıfırdan serisi Bölüm 3'ten geldi (`🛠️ Veriler/Sıfırdan serisi -
+Bölüm 3.md`), pilot-hud'da denendi. `SABITLER.md` ajanın değeri tahmin etmesini önler.
+`KRITERLER.md` "ajan bitti dedi, benim için de bitti" tuzağını kırar. `kullanıcının notları.md`
+kod başlamadan önce yapılan beyin dökümüdür. Proje public depo olacaksa üçü de iç dosyadır,
+`.gitignore`'a eklenir.
 
 `AGENTS.md` **kopya değil symlink** olur. Codex `AGENTS.md`, Claude `CLAUDE.md` okur; iki
 dosya tutulursa zamanla birbirinden kayar ve hangi ajanın hangi kuralı gördüğü belirsizleşir.
@@ -112,7 +149,7 @@ Symlink bu kaymayı model disiplinine değil dosya sistemine bağlar.
 ### 5. Vault'ta ikiz notu yaz
 
 ```bash
-mkdir -p "<HAFIZA>/🏰 İş/<slug>"
+mkdir -p "$HOME/.config/beyin/vault/🏰 İş/<slug>"
 ```
 
 Ardından `🏰 İş/<slug>/<slug>.md` dosyasını şu iskeletle oluştur (frontmatter alanları

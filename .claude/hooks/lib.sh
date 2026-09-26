@@ -37,6 +37,17 @@ if [ ! -d "$BEYIN_PROJECT_DIR/🔮 zihin" ]; then
   fi
 fi
 
+# Üst kökten açılış (kullanıcı, 26 Eylül: `cd <KÖK> && claude`): vault iki
+# kat aşağıdadır. Tek yol ayarı ~/.config/beyin/vault'a bakılır, ama yalnız oturum kökünün
+# İÇİNDEYSE: başka bir klasörde açılan oturum gerçek hafızaya yazmasın.
+if [ ! -d "$BEYIN_PROJECT_DIR/🔮 zihin" ]; then
+  BEYIN_AYAR=$(readlink -e "$HOME/.config/beyin/vault" 2>/dev/null || :)
+  BEYIN_KOK_GERCEK=$(readlink -e "$BEYIN_PROJECT_DIR" 2>/dev/null || :)
+  if [ -n "$BEYIN_AYAR" ] && [ -n "$BEYIN_KOK_GERCEK" ] && [ -d "$BEYIN_AYAR/🔮 zihin" ]; then
+    case "$BEYIN_AYAR/" in "$BEYIN_KOK_GERCEK"/*) BEYIN_PROJECT_DIR=$BEYIN_AYAR ;; esac
+  fi
+fi
+
 BEYIN_STATE_DIR="$BEYIN_PROJECT_DIR/.claude/scripts/.state"
 mkdir -p "$BEYIN_STATE_DIR" 2>/dev/null || :
 
@@ -100,7 +111,10 @@ beyin_cleanup_session_state() {
     -name 'session_start_time.*' -o \
     -name 'prompt_count.*' -o \
     -name 'needs_reflection.*' -o \
-    -name 'hookin-*.json' \
+    -name 'hookin-*.json' -o \
+    -name 'hatirlatildi.*' -o \
+    -name 'antigravity-*' -o \
+    -name 'compile-trigger-*' \
   \) -mtime +7 -exec rm -f {} \; 2>/dev/null || :
   find "$BEYIN_STATE_DIR" -type d -name 'prompt_count.*.lock' \
     -mtime +7 -exec rmdir {} \; 2>/dev/null || :
